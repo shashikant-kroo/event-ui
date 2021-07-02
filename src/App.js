@@ -98,10 +98,10 @@ class App extends React.Component {
 
       } else {
         const serviceNameForClickedResource = this.props.resourceServiceMap[clickedItemName]
-        if(serviceNameForClickedResource) {
+        if (serviceNameForClickedResource) {
           this.showEvents(
             servicesData?.[serviceNameForClickedResource]?.projections?.[clickedItemName]
-            ,clickedItemName)
+            , clickedItemName)
         }
       }
     }
@@ -111,7 +111,7 @@ class App extends React.Component {
   render() {
     this.updateInitialStateForMicroservice()
     return (
-      <div style={{display: "flex"}}>
+      <div style={{display: "flex", overflow: "auto", justifyContent: "center",  flexDirection: "column", padding: 12+ "px"}}>
         <Chart
           width={'100%'}
           height={350}
@@ -144,7 +144,7 @@ const mapDispatchToProps = dispatch => ({
 
 const mapStateToProps = (
   {
-    microserviceData: {serviceData,resourceServiceMap}
+    microserviceData: {serviceData, resourceServiceMap}
   }) => ({
   serviceData,
   resourceServiceMap
