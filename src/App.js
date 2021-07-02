@@ -32,10 +32,10 @@ function App() {
 
   const [root, setRoot] = useState(data)
 
-  const createNode = (serviceName) => {
+  const createEntry = (serviceName) => {
     return [
       {
-        v: {serviceName},
+        v: `${serviceName}`,
         f: `${serviceName}<div style="color:red; font-style:italic">Resource</div>`,
       },
       microServiceType.ACCOUNT_MICRO_SERVICE,
@@ -43,53 +43,19 @@ function App() {
     ]
   }
 
-  const accountNode = (data) => {
-    const newData = data
-    const resources = microserviceData.resourcesByService.accountService.map(serviceName => {
-      console.log("serviceName :", serviceName)
-      return newData.push(
-        createNode(serviceName)
-      )
-    })
+  function accountNode (data){
+    const resource = microserviceData.resourcesByService.accountService
+      .map(serviceName => createEntry(serviceName))
 
-    console.log("resources :",resources)
-    return resources
+    console.log([...data, ...resource])
+    return [...data, ...resource]
   }
 
-  const showAccountResources = () => {
-
-    const newData = accountNode(data)
-
-
-    // newData.push(
-    //   [
-    //     {
-    //       v: "xyz",
-    //       f: `xyz<div style="color:red; font-style:italic">Resource</div>`,
-    //     },
-    //     microServiceType.ACCOUNT_MICRO_SERVICE,
-    //     "xyz",
-    //   ]
-    // )
-    //
-    //
-    // newData.push(
-    //   [
-    //     {
-    //       v: "xyz1",
-    //       f: `xyz1<div style="color:red; font-style:italic">Resource</div>`,
-    //     },
-    //     microServiceType.ACCOUNT_MICRO_SERVICE,
-    //     "xyz1",
-    //   ]
-    // )
-
-    console.log("newData :", newData)
-
-    setRoot(newData)
+  function showAccountResources (){
+    setRoot( accountNode(data))
   }
 
-  const handleClickEvent = ({chartWrapper}) => {
+  async function handleClickEvent ({chartWrapper}) {
     const chart = chartWrapper.getChart()
     const selection = chart.getSelection()
 
