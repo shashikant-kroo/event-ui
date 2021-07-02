@@ -9,12 +9,14 @@ const microserviceReducer = (state = INITIAL_STATE, action) => {
     case serviceRequestType.FETCH_SERVICE_RESOURCES_EVENTS:
       console.log("action :", action)
       return {
-        ...state,
-        serviceData: action.payload
+        ...state
       }
 
     case "MICROSERVICE_FETCH_SUCCEEDED":
-      console.log("comes here")
+      console.log("comes here microservice reducer :", {
+        ...state,
+        serviceData: action.payload
+      })
       return {
         ...state,
         serviceData: action.payload

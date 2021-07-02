@@ -1,8 +1,10 @@
 import Chart from "react-google-charts";
-import React, {useState} from "react";
+import React from "react";
+import {connect} from "react-redux";
 
 import {microserviceData} from "./mock-data/mock-data";
 import {microServiceType} from "./Constants/constants";
+import {fetchMicroserviceData} from "./redux/microservice/microservice.action"
 
 
 class App extends React.Component {
@@ -17,6 +19,8 @@ class App extends React.Component {
   }
 
   componentDidMount() {
+    this.props.fetchMicroservicesData()
+    console.log("this.props.microserviceData", this.props.serviceData)
     const microservices = (Object.keys(microserviceData.services))
 
     microservices.forEach(service => {
@@ -34,7 +38,10 @@ class App extends React.Component {
   }
 
   accountNode =  (data) => {
-    const resource = microserviceData.resourcesByService.accountService
+    // console.log("this.props.serviceData!!!! :", this.props.serviceData)
+    const {accountService} = this.props.serviceData?.resourcesByService
+    console.log("account service :", accountService);
+    const resource = accountService
       .map(serviceName => this.createEntry(serviceName))
 
     console.log([...data, ...resource])
@@ -78,6 +85,7 @@ class App extends React.Component {
   }
 
   render() {
+    console.log("this.props.serviceData", this.props.serviceData)
     return (
       <div style={{display: "flex", maxWidth: 900}}>
         <Chart
@@ -106,48 +114,12 @@ class App extends React.Component {
   }
 }
 
-// function App() {
-//
-//
-//
-//   const [root, setRoot] = useState(data)
-//
-//   const createEntry = (serviceName) => {
-//     return [
-//       {
-//         v: `${serviceName}`,
-//         f: `${serviceName}<div style="color:red; font-style:italic">Resource</div>`,
-//       },
-//       microServiceType.ACCOUNT_MICRO_SERVICE,
-//       serviceName,
-//     ]
-//   }
-//
-//   return (
-//     <div style={{display: "flex", maxWidth: 900}}>
-//       <Chart
-//         width={'100%'}
-//         height={350}
-//         chartType="OrgChart"
-//         loader={<div>Loading Chart</div>}
-//         data={
-//           root
-//         }
-//         chartEvents={
-//           [
-//             {
-//               eventName: "select",
-//               callback: handleClickEvent
-//             }
-//           ]
-//         }
-//         options={{
-//           allowHtml: true,
-//         }}
-//         rootProps={{'data-testid': '1'}}
-//       />
-//     </div>
-//   );
-// }
+const mapDispatchToProps = dispatch => ({
+  fetchMicroservicesData : () => dispatch(fetchMicroserviceData())
+})
 
-export default App;
+const mapStateToProps = ({microserviceData : {serviceData}}) => ({
+  serviceData
+})
+
+export default connect(mapStateToProps, mapDispatchToProps)(App);

@@ -1,9 +1,9 @@
-import {call, put, takeEvery, takeLatest} from 'redux-saga/effects'
+import {call, put, takeEvery} from 'redux-saga/effects'
 import {getMicroservicesData} from "../../api/api"
 
 // Worker saga will be fired on USER_FETCH_REQUESTED actions
 function* fetchServiceAndItsResources(action) {
-  console.log("coming here")
+  console.log("coming here saga!!!!!!")
   try {
     const microservicesData = yield call(getMicroservicesData);
     yield put({type: "MICROSERVICE_FETCH_SUCCEEDED", payload: microservicesData});
