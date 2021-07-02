@@ -1,8 +1,8 @@
-import Chart from "react-google-charts";
 import React from "react";
 import {connect} from "react-redux";
+import Chart from "react-google-charts";
 
-import {microServiceType} from "./Constants/constants";
+import {microServiceType, resourceType} from "./Constants/constants";
 import {fetchMicroserviceData} from "./redux/microservice/microservice.action"
 
 
@@ -21,28 +21,24 @@ class App extends React.Component {
     this.props.fetchMicroservicesData()
   }
 
-  accountNode =  (data) => {
-    const {accountService} = this.props.serviceData?.resourcesByService
-    const resource = accountService
-      .map(serviceName => this.createEntry(serviceName))
-
-    console.log([...data, ...resource])
-    return [...data, ...resource]
-  }
-
-  showAccountResources (){
-    this.setState({data: this.accountNode(this.state.data)})
-  }
-
-  createEntry = (serviceName) => {
+  createEntry = (serviceName, microserviceType) => {
     return [
       {
         v: `${serviceName}`,
         f: `${serviceName}<div style="color:red; font-style:italic">Resource</div>`,
       },
-      microServiceType.ACCOUNT_MICRO_SERVICE,
+      microserviceType,
       serviceName,
     ]
+  }
+
+
+  showAccountResources (){
+    const {accountService} = this.props.serviceData?.resourcesByService
+    const resource = accountService
+      .map(serviceName => this.createEntry(serviceName, microServiceType.ACCOUNT_MICRO_SERVICE))
+
+    this.setState({data: [...this.state.data, ...resource]})
   }
 
   updateInitialStateForMicroservice = () => {
@@ -70,15 +66,15 @@ class App extends React.Component {
     if (selection.length === 1) {
       const [selectedItem] = selection
       const dataTable = chartWrapper.getDataTable()
-
-      console.log("dataTable :", dataTable)
-      console.log("selectedItem :", selectedItem)
-
       const {row} = selectedItem
 
+      console.log("selectedItem :", dataTable.getValue(row, 0))
       switch (dataTable.getValue(row, 0)) {
         case microServiceType.ACCOUNT_MICRO_SERVICE:
           this.showAccountResources()
+        case resourceType.accountServiceType.PREPAID_ACCOUNT:
+        case resourceType.accountServiceType.PAYMENT_ACCOUNT:
+        case resourceType.accountServiceType.RANDOM_RESOURCE:
       }
 
     }
@@ -87,7 +83,7 @@ class App extends React.Component {
   render() {
     this.updateInitialStateForMicroservice()
     return (
-      <div style={{display: "flex", maxWidth: 900}}>
+      <div style={{display: "flex"}}>
         <Chart
           width={'100%'}
           height={350}
