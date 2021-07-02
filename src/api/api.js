@@ -1,5 +1,3 @@
-import {microserviceData} from "../mock-data/mock-data"
-
 function getMicroservicesData() {
   console.log("fetching data")
   return new Promise((resolve,reject) => {

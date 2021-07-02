@@ -2,7 +2,6 @@ import Chart from "react-google-charts";
 import React from "react";
 import {connect} from "react-redux";
 
-import {microserviceData} from "./mock-data/mock-data";
 import {microServiceType} from "./Constants/constants";
 import {fetchMicroserviceData} from "./redux/microservice/microservice.action"
 
@@ -20,27 +19,10 @@ class App extends React.Component {
 
   componentDidMount() {
     this.props.fetchMicroservicesData()
-    console.log("this.props.microserviceData", this.props.serviceData)
-    const microservices = (Object.keys(microserviceData.services))
-
-    microservices.forEach(service => {
-      this.state.data.push(
-        [
-          {
-            v: `${service}`,
-            f: `${service}<div style="color:red; font-style:italic">Microservice</div>`,
-          },
-          '',
-          'The root service',
-        ]
-      )
-    })
   }
 
   accountNode =  (data) => {
-    // console.log("this.props.serviceData!!!! :", this.props.serviceData)
     const {accountService} = this.props.serviceData?.resourcesByService
-    console.log("account service :", accountService);
     const resource = accountService
       .map(serviceName => this.createEntry(serviceName))
 
@@ -85,7 +67,23 @@ class App extends React.Component {
   }
 
   render() {
-    console.log("this.props.serviceData", this.props.serviceData)
+
+    if(this.props.serviceData?.services) {
+      const microservices = Object.keys(this.props.serviceData?.services)
+      microservices.forEach(service => {
+        this.state.data.push(
+          [
+            {
+              v: `${service}`,
+              f: `${service}<div style="color:red; font-style:italic">Microservice</div>`,
+            },
+            '',
+            'The root service',
+          ]
+        )
+      })
+    }
+
     return (
       <div style={{display: "flex", maxWidth: 900}}>
         <Chart
