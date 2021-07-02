@@ -1,8 +1,6 @@
 import React from "react";
 import {connect} from "react-redux";
 import Chart from "react-google-charts";
-
-import {microServiceType, resourceType} from "./Constants/constants";
 import {fetchMicroserviceData} from "./redux/microservice/microservice.action"
 
 
@@ -21,14 +19,14 @@ class App extends React.Component {
     this.props.fetchMicroservicesData()
   }
 
-  createResourceNode = (serviceName, microserviceType) => {
+  createResourceNode = (resourceName, microserviceName) => {
     return [
       {
-        v: `${serviceName}`,
-        f: `${serviceName}<div style="color:red; font-style:italic">Resource</div>`,
+        v: `${resourceName}`,
+        f: `${resourceName}<div style="color:red; font-style:italic">Resource</div>`,
       },
-      microserviceType,
-      serviceName,
+      microserviceName,
+      resourceName,
     ]
   }
 
@@ -43,24 +41,24 @@ class App extends React.Component {
     ]
   }
 
-  showResources(service, name) {
-    const resources = service
-      .map(serviceName => this.createResourceNode(serviceName, name))
+  showResources(resources, microserviceName) {
+    const updatedResources = resources
+      .map(serviceName => this.createResourceNode(serviceName, microserviceName))
 
-    this.setState({data: [...this.state.data, ...resources]})
+    this.setState({data: [...this.state.data, ...updatedResources]})
   }
 
-  showEvents = (resource, resourceName) => {
-    const events = resource
+  showEvents = (events, resourceName) => {
+    const updatedEvents = events
       .map(eventName => this.createEventNode(eventName, resourceName))
 
-    this.setState({data: [...this.state.data, ...events]})
+    this.setState({data: [...this.state.data, ...updatedEvents]})
   }
 
 
   updateInitialStateForMicroservice = () => {
-    if (this.props.serviceData?.services) {
-      const microservices = Object.keys(this.props.serviceData?.services)
+    if (this.props.serviceData) {
+      const microservices = Object.keys(this.props.serviceData)
       microservices.forEach(service => {
         this.state.data.push(
           [
@@ -76,78 +74,39 @@ class App extends React.Component {
     }
   }
 
+  isMicroserviceClicked = (selectedResource) => {
+    const services = Object.keys(this.props.serviceData)
+    return services.some(resource => resource === selectedResource)
+  }
+
   handleClickEvent = ({chartWrapper}) => {
     const chart = chartWrapper.getChart()
     const selection = chart.getSelection()
-    const {resourcesByService} = this.props.serviceData
-    const {eventsByResource} = this.props
+    const servicesData = this.props.serviceData
 
     if (selection.length === 1) {
       const [selectedItem] = selection
       const dataTable = chartWrapper.getDataTable()
       const {row} = selectedItem
-      const clickedItem = dataTable.getValue(row, 0)
+      const clickedItemName = dataTable.getValue(row, 0)
 
-      console.log("clickedItem :", clickedItem)
-      switch (clickedItem) {
+      if (this.isMicroserviceClicked(clickedItemName)) {
+        const projections = servicesData?.[clickedItemName]?.projections
+        const resourcesForClickedService = Object.keys(projections)
 
-        //  ACCOUNT_MICRO_SERVICE
-        case microServiceType.ACCOUNT_MICRO_SERVICE:
-          this.showResources(
-            resourcesByService?.accountService,
-            microServiceType.ACCOUNT_MICRO_SERVICE
-          )
-          break;
-        case resourceType.accountServiceType.PREPAID_ACCOUNT:
-          this.showEvents(
-            eventsByResource?.prepaidAccount,
-            resourceType.accountServiceType.PREPAID_ACCOUNT
-          )
-          break;
-        case resourceType.accountServiceType.PAYMENT_ACCOUNT:
-          this.showEvents(
-            eventsByResource?.paymentAccount,
-            resourceType.accountServiceType.PAYMENT_ACCOUNT
-          )
-          break;
-        case resourceType.accountServiceType.RANDOM_RESOURCE:
-          this.showEvents(
-            eventsByResource?.randomResource,
-            resourceType.accountServiceType.RANDOM_RESOURCE
-          )
-          break;
+        this.showResources(resourcesForClickedService, clickedItemName)
 
-        //  ON_BOUND_PAYMENT_SERVICE
-        case microServiceType.OUT_BOUND_PAYMENT_SERVICE:
-          this.showResources(
-            resourcesByService?.outboundPaymentService,
-            microServiceType.OUT_BOUND_PAYMENT_SERVICE
-          )
-          break;
-        case resourceType.outBoundServiceType.OUT_BOUND_PAYMENT:
+      } else {
+        const serviceNameForClickedResource = this.props.resourceServiceMap[clickedItemName]
+        if(serviceNameForClickedResource) {
           this.showEvents(
-            eventsByResource?.outboundPayment,
-            resourceType.outBoundServiceType.OUT_BOUND_PAYMENT
-          )
-          break;
-
-        // PREPAID_ACCOUNT_SERVICE
-        case microServiceType.PREPAID_ACCOUNT_SERVICE:
-          this.showResources(
-            resourcesByService?.prepaidAccountService,
-            microServiceType.PREPAID_ACCOUNT_SERVICE
-          )
-          break;
-        case resourceType.prepaidAccountType.PREPAID_ACCOUNT:
-          this.showEvents(
-            eventsByResource?.prepaidAccount,
-            resourceType.prepaidAccountType.PREPAID_ACCOUNT
-          )
-          break;
+            servicesData?.[serviceNameForClickedResource]?.projections?.[clickedItemName]
+            ,clickedItemName)
+        }
       }
-
     }
   }
+
 
   render() {
     this.updateInitialStateForMicroservice()
@@ -185,10 +144,10 @@ const mapDispatchToProps = dispatch => ({
 
 const mapStateToProps = (
   {
-    microserviceData: {serviceData, eventsByResource}
+    microserviceData: {serviceData,resourceServiceMap}
   }) => ({
   serviceData,
-  eventsByResource
+  resourceServiceMap
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)(App);
