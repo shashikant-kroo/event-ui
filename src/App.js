@@ -111,7 +111,7 @@ class App extends React.Component {
   render() {
     this.updateInitialStateForMicroservice()
     return (
-      <div style={{display: "flex", overflow: "auto", justifyContent: "center",  flexDirection: "column", padding: 12+ "px"}}>
+      <div style={{display: "flex", overflow: "auto", justifyContent: "center",  flexDirection: "column", padding: 30+ "px"}}>
         <Chart
           width={'100%'}
           height={350}
