@@ -88,7 +88,10 @@ class App extends React.Component {
       const {row} = selectedItem
       const clickedItem = dataTable.getValue(row, 0)
 
+      console.log("clickedItem :", clickedItem)
       switch (clickedItem) {
+
+        //  ACCOUNT_MICRO_SERVICE
         case microServiceType.ACCOUNT_MICRO_SERVICE:
           this.showResources(
             resourcesByService?.accountService,
@@ -111,6 +114,34 @@ class App extends React.Component {
           this.showEvents(
             eventsByResource?.randomResource,
             resourceType.accountServiceType.RANDOM_RESOURCE
+          )
+          break;
+
+        //  ON_BOUND_PAYMENT_SERVICE
+        case microServiceType.OUT_BOUND_PAYMENT_SERVICE:
+          this.showResources(
+            resourcesByService?.outboundPaymentService,
+            microServiceType.OUT_BOUND_PAYMENT_SERVICE
+          )
+          break;
+        case resourceType.outBoundServiceType.OUT_BOUND_PAYMENT:
+          this.showEvents(
+            eventsByResource?.outboundPayment,
+            resourceType.outBoundServiceType.OUT_BOUND_PAYMENT
+          )
+          break;
+
+        // PREPAID_ACCOUNT_SERVICE
+        case microServiceType.PREPAID_ACCOUNT_SERVICE:
+          this.showResources(
+            resourcesByService?.prepaidAccountService,
+            microServiceType.PREPAID_ACCOUNT_SERVICE
+          )
+          break;
+        case resourceType.prepaidAccountType.PREPAID_ACCOUNT:
+          this.showEvents(
+            eventsByResource?.prepaidAccount,
+            resourceType.prepaidAccountType.PREPAID_ACCOUNT
           )
           break;
       }

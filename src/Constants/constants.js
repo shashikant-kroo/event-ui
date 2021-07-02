@@ -1,8 +1,8 @@
 export const microServiceType = {
   ACCOUNT_MICRO_SERVICE : "accountService",
-  ON_BOUND_PAYMENT_SERVICE: "onBoundService",
+  OUT_BOUND_PAYMENT_SERVICE: "outboundPaymentService",
   PAYMENT_ACCOUNT_SERVICE: "paymentAccountService",
-  CUSTOMER_SERVICE: "customerService"
+  PREPAID_ACCOUNT_SERVICE: "prepaidAccountService"
 }
 
 export const resourceType = {
@@ -10,5 +10,13 @@ export const resourceType = {
     PREPAID_ACCOUNT: "prepaidAccount",
     PAYMENT_ACCOUNT: "paymentAccount",
     RANDOM_RESOURCE: "randomResource"
+  },
+
+  outBoundServiceType: {
+    OUT_BOUND_PAYMENT: "outboundPayment"
+  },
+
+  prepaidAccountType : {
+    PREPAID_ACCOUNT: "prepaidAccount"
   }
 }
