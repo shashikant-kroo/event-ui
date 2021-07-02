@@ -1,7 +1,8 @@
 import {serviceRequestType} from "../microservice/microservice.type";
 
 const INITIAL_STATE = {
-  serviceData: null
+  serviceData: null,
+  eventsByResource : null
 }
 
 const microserviceReducer = (state = INITIAL_STATE, action) => {
@@ -14,7 +15,8 @@ const microserviceReducer = (state = INITIAL_STATE, action) => {
     case "MICROSERVICE_FETCH_SUCCEEDED":
       return {
         ...state,
-        serviceData: action.payload
+        serviceData: action.payload,
+        eventsByResource : action.payload.eventsByResource
       }
     default:
       return state

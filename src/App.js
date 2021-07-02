@@ -80,7 +80,7 @@ class App extends React.Component {
     const chart = chartWrapper.getChart()
     const selection = chart.getSelection()
     const {resourcesByService} = this.props.serviceData
-    const {eventsByResource} = this.props.serviceData
+    const {eventsByResource} = this.props
 
     if (selection.length === 1) {
       const [selectedItem] = selection
@@ -183,8 +183,12 @@ const mapDispatchToProps = dispatch => ({
   fetchMicroservicesData: () => dispatch(fetchMicroserviceData())
 })
 
-const mapStateToProps = ({microserviceData: {serviceData}}) => ({
-  serviceData
+const mapStateToProps = (
+  {
+    microserviceData: {serviceData, eventsByResource}
+  }) => ({
+  serviceData,
+  eventsByResource
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)(App);
