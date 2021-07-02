@@ -45,6 +45,24 @@ class App extends React.Component {
     ]
   }
 
+  updateInitialStateForMicroservice = () => {
+    if(this.props.serviceData?.services) {
+      const microservices = Object.keys(this.props.serviceData?.services)
+      microservices.forEach(service => {
+        this.state.data.push(
+          [
+            {
+              v: `${service}`,
+              f: `${service}<div style="color:red; font-style:italic">Microservice</div>`,
+            },
+            '',
+            'The root service',
+          ]
+        )
+      })
+    }
+  }
+
   handleClickEvent =  ({chartWrapper}) => {
     const chart = chartWrapper.getChart()
     const selection = chart.getSelection()
@@ -67,23 +85,7 @@ class App extends React.Component {
   }
 
   render() {
-
-    if(this.props.serviceData?.services) {
-      const microservices = Object.keys(this.props.serviceData?.services)
-      microservices.forEach(service => {
-        this.state.data.push(
-          [
-            {
-              v: `${service}`,
-              f: `${service}<div style="color:red; font-style:italic">Microservice</div>`,
-            },
-            '',
-            'The root service',
-          ]
-        )
-      })
-    }
-
+    this.updateInitialStateForMicroservice()
     return (
       <div style={{display: "flex", maxWidth: 900}}>
         <Chart
