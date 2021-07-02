@@ -1,0 +1,3 @@
+export const serviceRequestType = {
+  FETCH_SERVICE_RESOURCES_EVENTS:  "FETCH_SERVICE_RESOURCES_EVENTS"
+}
