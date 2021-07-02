@@ -21,7 +21,7 @@ class App extends React.Component {
     this.props.fetchMicroservicesData()
   }
 
-  createEntry = (serviceName, microserviceType) => {
+  createResourceNode = (serviceName, microserviceType) => {
     return [
       {
         v: `${serviceName}`,
@@ -32,17 +32,27 @@ class App extends React.Component {
     ]
   }
 
+  createEventNode = (eventName, resourceType) => {
+    return [
+      {
+        v: `${eventName}`,
+        f: `${eventName}<div style="color:red; font-style:italic">Event</div>`,
+      },
+      resourceType,
+      eventName,
+    ]
+  }
 
   showResources(service, name) {
     const resources = service
-      .map(serviceName => this.createEntry(serviceName, name))
+      .map(serviceName => this.createResourceNode(serviceName, name))
 
     this.setState({data: [...this.state.data, ...resources]})
   }
 
   showEvents = (resource, resourceName) => {
     const events = resource
-      .map(eventName => this.createEntry(eventName, resourceName))
+      .map(eventName => this.createEventNode(eventName, resourceName))
 
     this.setState({data: [...this.state.data, ...events]})
   }
@@ -76,9 +86,9 @@ class App extends React.Component {
       const [selectedItem] = selection
       const dataTable = chartWrapper.getDataTable()
       const {row} = selectedItem
+      const clickedItem = dataTable.getValue(row, 0)
 
-      console.log("selectedItem :", dataTable.getValue(row, 0))
-      switch (dataTable.getValue(row, 0)) {
+      switch (clickedItem) {
         case microServiceType.ACCOUNT_MICRO_SERVICE:
           this.showResources(
             resourcesByService?.accountService,
@@ -86,6 +96,10 @@ class App extends React.Component {
           )
           break;
         case resourceType.accountServiceType.PREPAID_ACCOUNT:
+          this.showEvents(
+            eventsByResource?.prepaidAccount,
+            resourceType.accountServiceType.PREPAID_ACCOUNT
+          )
           break;
         case resourceType.accountServiceType.PAYMENT_ACCOUNT:
           this.showEvents(
@@ -94,6 +108,11 @@ class App extends React.Component {
           )
           break;
         case resourceType.accountServiceType.RANDOM_RESOURCE:
+          this.showEvents(
+            eventsByResource?.randomResource,
+            resourceType.accountServiceType.RANDOM_RESOURCE
+          )
+          break;
       }
 
     }
